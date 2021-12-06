@@ -23,8 +23,15 @@ app.post("/api/persons", (req, res) => {
 
   if (!body.name) {
     return res.status(400).json({ error: "name missing" });
-  } else if (!body.number) {
+  }
+
+  if (!body.number) {
     return res.status(400).json({ error: "number missing" });
+  }
+
+  const nameExists = data.find((item) => item.name === body.name);
+  if (nameExists) {
+    return res.status(400).json({ error: "name already exists" });
   }
 
   const entry = {
