@@ -1,0 +1,23 @@
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "Benjamin Bree",
+    "number": "111-444-444"
+}
+
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "anyitem": "123-123-123"
+}
+
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "Artem Nedostup"
+}
