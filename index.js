@@ -7,8 +7,15 @@ const data = require("./data.json");
 const app = express();
 const port = 3001;
 
-app.use(morgan("tiny"));
 app.use(express.json());
+morgan.token("post-body", function (req, res) {
+  return JSON.stringify(req.body);
+});
+app.use(
+  morgan(
+    ":method :url :status :res[content-length] - :response-time ms :post-body"
+  )
+);
 
 const getEntriesNumber = () => (data ? data.length : 0);
 
