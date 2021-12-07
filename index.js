@@ -1,11 +1,13 @@
 const { response } = require("express");
 const express = require("express");
 const fs = require("fs");
+const morgan = require("morgan");
 const data = require("./data.json");
 
 const app = express();
 const port = 3001;
 
+app.use(morgan("tiny"));
 app.use(express.json());
 
 const getEntriesNumber = () => (data ? data.length : 0);
