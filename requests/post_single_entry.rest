@@ -21,3 +21,28 @@ Content-Type: application/json
 {
     "name": "Artem Nedostup"
 }
+
+###
+POST https://sheltered-sands-12002.herokuapp.com/api/persons
+Content-Type: application/json
+
+{
+    "name": "Sasha P",
+    "number": "332-4424-444"
+}
+
+###
+POST https://sheltered-sands-12002.herokuapp.com/api/persons
+Content-Type: application/json
+
+{
+    "anyitem": "123-123-123"
+}
+
+###
+POST https://sheltered-sands-12002.herokuapp.com/api/persons
+Content-Type: application/json
+
+{
+    "name": "Artem Nedostup"
+}
