@@ -12,7 +12,7 @@ let data = [
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.use(express.static("ui"));
+app.use(express.static("build"));
 app.use(cors());
 app.use(express.json());
 morgan.token("post-body", function (req, res) {
