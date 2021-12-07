@@ -6,7 +6,7 @@ const cors = require("cors");
 const data = require("./data.json");
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
@@ -79,5 +79,5 @@ app.get("/info", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Phonebook api listening at http://localhost:${port}`);
+  console.log(`Phonebook api listening at ${port}`);
 });
