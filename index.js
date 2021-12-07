@@ -2,11 +2,13 @@ const { response } = require("express");
 const express = require("express");
 const fs = require("fs");
 const morgan = require("morgan");
+const cors = require("cors");
 const data = require("./data.json");
 
 const app = express();
 const port = 3001;
 
+app.use(cors());
 app.use(express.json());
 morgan.token("post-body", function (req, res) {
   return JSON.stringify(req.body);
