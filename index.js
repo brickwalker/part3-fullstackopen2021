@@ -3,7 +3,11 @@ const express = require("express");
 const fs = require("fs");
 const morgan = require("morgan");
 const cors = require("cors");
-const data = require("./data.json");
+
+let data = [
+  { id: 1, name: "King Danylo", number: "111-222-333" },
+  { id: 2, name: "Kyrylo Kozhumiaka", number: "9922-3322-444" },
+];
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -20,9 +24,6 @@ app.use(
 );
 
 const getEntriesNumber = () => (data ? data.length : 0);
-
-const writeData = (data, callback) =>
-  fs.writeFile("./data.json", JSON.stringify(data), callback);
 
 app.get("/api/persons", (req, res) => {
   res.json(data);
@@ -51,7 +52,8 @@ app.post("/api/persons", (req, res) => {
     number: body.number,
   };
 
-  writeData([...data, entry], () => res.json(entry));
+  data = [...data, entry];
+  res.json(entry);
 });
 
 app.get("/api/persons/:id", (req, res) => {
@@ -64,8 +66,7 @@ app.delete("/api/persons/:id", (req, res) => {
   const id = Number(req.params.id);
   const person = data.find((item) => item.id === id);
   if (person) {
-    const newData = data.filter((item) => item.id !== id);
-    writeData(newData, () => res.status(204).end());
+    data = data.filter((item) => item.id !== id);
   } else {
     res.status(404).end();
   }
