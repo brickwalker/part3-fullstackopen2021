@@ -12,6 +12,7 @@ let data = [
 const app = express();
 const port = process.env.PORT || 3001;
 
+app.use(express.static("ui"));
 app.use(cors());
 app.use(express.json());
 morgan.token("post-body", function (req, res) {
@@ -67,7 +68,7 @@ app.delete("/api/persons/:id", (req, res) => {
   const person = data.find((item) => item.id === id);
   if (person) {
     data = data.filter((item) => item.id !== id);
-    res.status(204).end()
+    res.status(204).end();
   } else {
     res.status(404).end();
   }
