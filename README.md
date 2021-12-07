@@ -1,9 +1,12 @@
 # My Heroku app
 ```javascript
-# All entries
+# Web-ui
+https://sheltered-sands-12002.herokuapp.com
+
+# API all entries
 https://sheltered-sands-12002.herokuapp.com/api/persons
 
-# Entry by id
+# API entry by id
 https://sheltered-sands-12002.herokuapp.com/api/persons/1
 
 # Info
