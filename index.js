@@ -29,15 +29,6 @@ app.get("/api/persons", (req, res, next) => {
 
 app.post("/api/persons", (req, res, next) => {
   const body = req.body;
-
-  if (!body.name) {
-    next(new Error("name missing"));
-  }
-
-  if (!body.number) {
-    next(new Error("number missing"));
-  }
-
   const newContact = new Person({
     name: body.name,
     number: body.number,
@@ -76,11 +67,10 @@ app.put("/api/persons/:id", (req, res, next) => {
   const body = req.body;
 
   const updateRecord = {
-    name: body.name,
     number: body.number,
   };
 
-  Person.findByIdAndUpdate(req.params.id, updateRecord, { new: true })
+  Person.findByIdAndUpdate(req.params.id, updateRecord, { new: true, runValidators: true })
     .then((entry) => res.json(entry))
     .catch((error) => next(error));
 });
