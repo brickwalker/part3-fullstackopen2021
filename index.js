@@ -38,18 +38,13 @@ app.post("/api/persons", (req, res, next) => {
     next(new Error("number missing"));
   }
 
-  Person.findOne({ name: body.name })
-    .then((entry) => {
-      if (entry) {
-        next(new Error(`name ${entry.name} already exists`));
-      } else {
-        const newContact = new Person({
-          name: body.name,
-          number: body.number,
-        });
-        newContact.save().then((savedContact) => res.json(savedContact));
-      }
-    })
+  const newContact = new Person({
+    name: body.name,
+    number: body.number,
+  });
+  newContact
+    .save()
+    .then((savedContact) => res.json(savedContact))
     .catch((error) => next(error));
 });
 
