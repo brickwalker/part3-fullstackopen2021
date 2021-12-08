@@ -3,6 +3,8 @@ const express = require("express");
 const fs = require("fs");
 const morgan = require("morgan");
 const cors = require("cors");
+require("dotenv").config({ path: ".env.local" });
+const Person = require("./models/Person");
 
 let data = [
   { id: 1, name: "King Danylo", number: "111-222-333" },
@@ -27,7 +29,7 @@ app.use(
 const getEntriesNumber = () => (data ? data.length : 0);
 
 app.get("/api/persons", (req, res) => {
-  res.json(data);
+  Person.find({}).then((entries) => res.json(entries));
 });
 
 app.post("/api/persons", (req, res) => {
