@@ -116,9 +116,9 @@ const errorHandler = (err, req, res, next) => {
 
   if (err.name === "CastError") {
     res.json({ error: "malformed id" });
+  } else {
+    res.json({ error: err.message });
   }
-
-  res.json({ error: err.message });
 
   next(err);
 };
