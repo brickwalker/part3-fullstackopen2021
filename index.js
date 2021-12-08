@@ -6,11 +6,6 @@ const cors = require("cors");
 require("dotenv").config({ path: ".env.local" });
 const Person = require("./models/Person");
 
-let data = [
-  { id: 1, name: "King Danylo", number: "111-222-333" },
-  { id: 2, name: "Kyrylo Kozhumiaka", number: "9922-3322-444" },
-];
-
 const app = express();
 const port = process.env.PORT || 3001;
 
@@ -34,29 +29,29 @@ app.get("/api/persons", (req, res) => {
 
 app.post("/api/persons", (req, res) => {
   const body = req.body;
-  const id = getEntriesNumber() * 10 + Math.floor(Math.random() * 10);
 
   if (!body.name) {
-    return res.status(400).json({ error: "name missing" });
+    res.status(400).json({ error: "name missing" }).end();
   }
 
   if (!body.number) {
-    return res.status(400).json({ error: "number missing" });
+    res.status(400).json({ error: "number missing" }).end();
   }
 
-  const nameExists = data.find((item) => item.name === body.name);
-  if (nameExists) {
-    return res.status(400).json({ error: "name already exists" });
-  }
-
-  const entry = {
-    id,
-    name: body.name,
-    number: body.number,
-  };
-
-  data = [...data, entry];
-  res.json(entry);
+  Person.findOne({ name: body.name }).then((entry) => {
+    if (entry) {
+      res
+        .status(400)
+        .json({ error: `name ${entries.name} already exists` })
+        .end();
+    } else {
+      const newContact = new Person({
+        name: body.name,
+        number: body.number,
+      });
+      newContact.save().then((savedContact) => res.json(savedContact));
+    }
+  });
 });
 
 app.get("/api/persons/:id", (req, res) => {
