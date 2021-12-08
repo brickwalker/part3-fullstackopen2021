@@ -23,60 +23,60 @@ app.use(
 
 const getEntriesNumber = () => (data ? data.length : 0);
 
-app.get("/api/persons", (req, res) => {
-  Person.find({}).then((entries) => res.json(entries));
+app.get("/api/persons", (req, res, next) => {
+  Person.find({})
+    .then((entries) => res.json(entries))
+    .catch((error) => next(error));
 });
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
   const body = req.body;
 
   if (!body.name) {
-    res.status(400).json({ error: "name missing" }).end();
+    next(new Error("name missing"));
   }
 
   if (!body.number) {
-    res.status(400).json({ error: "number missing" }).end();
+    next(new Error("number missing"));
   }
 
-  Person.findOne({ name: body.name }).then((entry) => {
-    if (entry) {
-      res
-        .status(400)
-        .json({ error: `name ${entries.name} already exists` })
-        .end();
-    } else {
-      const newContact = new Person({
-        name: body.name,
-        number: body.number,
-      });
-      newContact.save().then((savedContact) => res.json(savedContact));
-    }
-  });
+  Person.findOne({ name: body.name })
+    .then((entry) => {
+      if (entry) {
+        next(new Error(`name ${entries.name} already exists`));
+      } else {
+        const newContact = new Person({
+          name: body.name,
+          number: body.number,
+        });
+        newContact.save().then((savedContact) => res.json(savedContact));
+      }
+    })
+    .catch((error) => next(error));
 });
 
-app.get("/api/persons/:id", (req, res) => {
+app.get("/api/persons/:id", (req, res, next) => {
   Person.findById(req.params.id)
     .then((entry) => {
       if (entry) {
         res.json(entry);
       } else {
-        res.status(404).end();
+        next(new Error("not found"));
       }
     })
-    .catch((error) => {
-      console.error(error);
-      res.status(400).send({ error: "malformatted id" });
-    });
+    .catch((error) => next(error));
 });
 
-app.delete("/api/persons/:id", (req, res) => {
-  Person.findByIdAndDelete(req.params.id).then((entry) => {
-    if (entry) {
-      res.status(204).end();
-    } else {
-      res.status(404).end();
-    }
-  });
+app.delete("/api/persons/:id", (req, res, next) => {
+  Person.findByIdAndDelete(req.params.id)
+    .then((entry) => {
+      if (entry) {
+        res.status(204).end();
+      } else {
+        next(new Error("not found"));
+      }
+    })
+    .catch((error) => next(error));
 });
 
 app.get("/info", (req, res) => {
@@ -85,6 +85,30 @@ app.get("/info", (req, res) => {
                 <p>${new Date()}</p>
             </div>`);
 });
+
+const unknownEndpoint = (req, res) =>
+  res.status(404).json({ error: "unknown endpoint" });
+
+app.use(unknownEndpoint);
+
+const errorHandler = (err, req, res, next) => {
+  console.error(err.message);
+  if (err.message === "not found") {
+    res.status(404);
+  } else {
+    res.status(400);
+  }
+  
+  if (err.name === "CastError") {
+    res.json({ error: "malformed id" }).end();
+  }
+
+  res.json({ error: err.message }).end();
+
+  next(err);
+};
+
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Phonebook api listening at ${port}`);
