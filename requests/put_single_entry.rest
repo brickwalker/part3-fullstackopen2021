@@ -1,0 +1,16 @@
+PUT http://localhost:3001/api/persons/61b0e10aed72d3195014df0f
+Content-Type: application/json
+
+{
+    "name": "Sasha P",
+    "number": "888888"
+}
+
+###
+PUT https://sheltered-sands-12002.herokuapp.com/api/persons/61b0e10aed72d3195014df0f
+Content-Type: application/json
+
+{
+    "name": "Sasha P",
+    "number": "332-4424-444"
+}

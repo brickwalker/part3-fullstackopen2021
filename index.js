@@ -21,8 +21,6 @@ app.use(
   )
 );
 
-const getEntriesNumber = () => (data ? data.length : 0);
-
 app.get("/api/persons", (req, res, next) => {
   Person.find({})
     .then((entries) => res.json(entries))
@@ -43,7 +41,7 @@ app.post("/api/persons", (req, res, next) => {
   Person.findOne({ name: body.name })
     .then((entry) => {
       if (entry) {
-        next(new Error(`name ${entries.name} already exists`));
+        next(new Error(`name ${entry.name} already exists`));
       } else {
         const newContact = new Person({
           name: body.name,
@@ -79,11 +77,28 @@ app.delete("/api/persons/:id", (req, res, next) => {
     .catch((error) => next(error));
 });
 
+app.put("/api/persons/:id", (req, res, next) => {
+  const body = req.body;
+
+  const updateRecord = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Person.findByIdAndUpdate(req.params.id, updateRecord, { new: true })
+    .then((entry) => res.json(entry))
+    .catch((error) => next(error));
+});
+
 app.get("/info", (req, res) => {
-  res.send(`<div>
-                <p>Phonebook has info for ${getEntriesNumber()} people</p>
-                <p>${new Date()}</p>
-            </div>`);
+  Person.find({})
+    .then((entries) =>
+      res.send(`<div>
+                  <p>Phonebook has info for ${entries.length} people</p>
+                  <p>${new Date()}</p>
+                </div>`)
+    )
+    .catch((error) => next(error));
 });
 
 const unknownEndpoint = (req, res) =>
@@ -98,12 +113,12 @@ const errorHandler = (err, req, res, next) => {
   } else {
     res.status(400);
   }
-  
+
   if (err.name === "CastError") {
-    res.json({ error: "malformed id" }).end();
+    res.json({ error: "malformed id" });
   }
 
-  res.json({ error: err.message }).end();
+  res.json({ error: err.message });
 
   next(err);
 };
