@@ -10,7 +10,7 @@ const connectionString = `mongodb+srv://${user}:${pwd}@${cluster}/${db}?retryWri
 
 mongoose
   .connect(connectionString)
-  .then((result) => console.log("Connected to MongoDB"))
+  .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.log("Error connecting to MongoDB", error.message));
 
 const personSchema = mongoose.Schema({
