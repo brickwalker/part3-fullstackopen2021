@@ -1,6 +1,4 @@
-const { response } = require("express");
 const express = require("express");
-const fs = require("fs");
 const morgan = require("morgan");
 const cors = require("cors");
 require("dotenv").config({ path: ".env.local" });
@@ -12,6 +10,7 @@ const port = process.env.PORT || 3001;
 app.use(express.static("build"));
 app.use(cors());
 app.use(express.json());
+// eslint-disable-next-line no-unused-vars
 morgan.token("post-body", function (req, res) {
   return JSON.stringify(req.body);
 });
@@ -70,12 +69,15 @@ app.put("/api/persons/:id", (req, res, next) => {
     number: body.number,
   };
 
-  Person.findByIdAndUpdate(req.params.id, updateRecord, { new: true, runValidators: true })
+  Person.findByIdAndUpdate(req.params.id, updateRecord, {
+    new: true,
+    runValidators: true,
+  })
     .then((entry) => res.json(entry))
     .catch((error) => next(error));
 });
 
-app.get("/info", (req, res) => {
+app.get("/info", (req, res, next) => {
   Person.find({})
     .then((entries) =>
       res.send(`<div>
